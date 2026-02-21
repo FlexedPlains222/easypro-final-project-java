@@ -50,12 +50,12 @@ public class Car {
 
     private void printDetails(ArrayList<Part> parts) {
         for (int i = 0; i < parts.size(); i++) {
+            System.out.print(parts.get(i).partType);
             if (i == parts.size() - 1) {
                 System.out.print(". ");
             } else {
                 System.out.print(", ");
             }
-            System.out.print(parts.get(i).partType);
         }
     }
 }

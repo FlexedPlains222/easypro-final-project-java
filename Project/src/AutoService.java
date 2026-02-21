@@ -54,6 +54,7 @@ public class AutoService {
         for (Car car : queue) {
             System.out.print("#" + num++ + " ");
             car.showInfo();
+            System.out.println(" ");
         }
     }
 }
