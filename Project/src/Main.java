@@ -62,7 +62,7 @@ public class Main {
                     service.showQueue();
                     break;
                 case 3:
-                    repairNextCar(service, scanner, fixedCarsOfDay, refusedCarsOfDay);
+                    repairNextCar(service, fixedCarsOfDay, refusedCarsOfDay, scanner);
                     break;
                 case 4:
                     restockWarehouse(service, scanner);
@@ -92,7 +92,7 @@ public class Main {
         scanner.close();
     }
 
-    private static void repairNextCar(AutoService service, Scanner scanner, ArrayList<Car> fixed, ArrayList<Car> refused) {
+    private static void repairNextCar(AutoService service, ArrayList<Car> fixed, ArrayList<Car> refused, Scanner scanner) {
         Car car = service.pollCar();
         if (car == null) {
             System.out.println("Очередь пуста, нечего ремонтировать.");
@@ -101,37 +101,48 @@ public class Main {
 
         System.out.println("\n--- Ремонт машины " + car.name + " ---");
         car.showInfo();
-
-        if (car.isFixed()) {
-            System.out.println("Машина уже исправна! Отпускаем без ремонта.");
-            return;
-        }
-
-        ArrayList<Part> brokenCopy = new ArrayList<>(car.getBrokenParts());
-        int repairedCount = 0;
-        for (Part part : brokenCopy) {
-            if (service.getWarehouse().hasPart(part)) {
-                service.getWarehouse().takePart(part);
-                car.fixPart(part);
-                service.addMoney(part.repairPrice);
-                System.out.println("Отремонтирована деталь: " + part.partType + " (доход +" + part.repairPrice + ")");
-                dayMoney += part.repairPrice;
-                repairedCount++;
-            } else {
-                System.out.println("Нет на складе детали " + part.partType + " – пропускаем.");
-
+        System.out.println(" ");
+        System.out.println("Починить машину?(1- да, 2-нет)");
+        int question = scanner.nextInt();
+        scanner.nextLine();
+        if (question == 1){
+            if (car.isFixed()) {
+                System.out.println("Машина уже исправна! Отпускаем без ремонта.");
+                return;
             }
-        }
 
-        if (car.isFixed()) {
-            System.out.println("Машина полностью исправлена и уезжает!");
-            fixed.add(car);
-        } else {
-            System.out.println("Не все поломки устранены (не хватило деталей).");
-            refused.add(car);
+            ArrayList<Part> brokenCopy = new ArrayList<>(car.getBrokenParts());
+            int repairedCount = 0;
+            for (Part part : brokenCopy) {
+                if (service.getWarehouse().hasPart(part)) {
+                    service.getWarehouse().takePart(part);
+                    car.fixPart(part);
+                    service.addMoney(part.repairPrice);
+                    System.out.println("Отремонтирована деталь: " + part.partType + " (доход +" + part.repairPrice + ")");
+                    dayMoney += part.repairPrice;
+                    repairedCount++;
+                } else {
+                    System.out.println("Нет на складе детали " + part.partType + " – пропускаем.");
+
+                }
+            }
+
+            if (car.isFixed()) {
+                System.out.println("Машина полностью исправлена и уезжает!");
+                fixed.add(car);
+            } else {
+                System.out.println("Не все поломки устранены (не хватило деталей).");
+                refused.add(car);
+                service.refuseFine(car, true);
+            }
+            System.out.println("Текущий баланс: " + service.getMoney());
         }
-        System.out.println("Текущий баланс: " + service.getMoney());
+        else {
+            service.refuseFine(car, false);
+        }
     }
+
+
 
     private static void generateQueue(int count, Random random, AutoService service){
         String[] carNames = {"Toyota", "BMW", "Lada", "Ford", "Honda"};
