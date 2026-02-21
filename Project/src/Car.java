@@ -2,45 +2,44 @@ import java.util.ArrayList;
 
 public class Car {
     public String name;
-
     private ArrayList<Part> brokenParts = new ArrayList<Part>();
     private ArrayList<Part> parts = new ArrayList<Part>();
 
-    public Car(String name){
-         this.name = name;
+    public Car(String name) {
+        this.name = name;
     }
 
-    public void addPart(Part part){
+    public void addPart(Part part) {
         parts.add(part);
     }
 
-    public void breakPart(Part part){
-        if(!brokenParts.contains(part)){
+    public void breakPart(Part part) {
+        if (!brokenParts.contains(part)) {
             brokenParts.add(part);
         }
     }
 
-    public boolean isBroken(Part part){
+    public boolean isBroken(Part part) {
         return brokenParts.contains(part);
     }
 
-    public void fixPart(Part part){
+    public void fixPart(Part part) {
         brokenParts.remove(part);
     }
 
-    public boolean isFixed(){
+    public boolean isFixed() {
         return brokenParts.size() == 0;
     }
 
-    public ArrayList<Part> getBrokenParts(){
+    public ArrayList<Part> getBrokenParts() {
         return brokenParts;
     }
 
-    public int brokenCount(){
+    public int brokenCount() {
         return brokenParts.size();
     }
 
-    public void showInfo(){
+    public void showInfo() {
         System.out.println("====МАШИНА: " + name + "====");
         System.out.print("Сломанные детали: ");
         printDetails(brokenParts);
@@ -49,12 +48,11 @@ public class Car {
         printDetails(parts);
     }
 
-    private void printDetails(ArrayList<Part> parts){
+    private void printDetails(ArrayList<Part> parts) {
         for (int i = 0; i < parts.size(); i++) {
-            if (i == parts.size()-1){
+            if (i == parts.size() - 1) {
                 System.out.print(". ");
-            }
-            else {
+            } else {
                 System.out.print(", ");
             }
             System.out.print(parts.get(i).partType);
